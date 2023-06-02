@@ -20,7 +20,7 @@ $data = json_decode($response, true);
 print("<pre>");
 foreach($data['results'] as $key => $value){
 var_dump($value['name']);
-print($value['name']);
+print($value['nane']);
 }
 print("</pre>");
 ?>
