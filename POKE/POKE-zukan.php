@@ -19,8 +19,8 @@ $data = json_decode($response, true);
 // 取得結果をループさせてポケモンの名前を表示する
 print("<pre>");
 foreach($data['results'] as $key => $value){
-var_dump($value['name']);
-print($value['nane']);
+//var_dump($value['name']);
+echo($value['name']);
 }
 print("</pre>");
 ?>
