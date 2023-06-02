@@ -23,3 +23,22 @@ var_dump($value['name']);
 }
 print("</pre>");
 ?>
+
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>poke-poke api</title>
+</head>
+<body>
+<div>
+    <p>名前</p>
+    {$data['name']}
+    <p>タイプ</p>
+    <p>たかさ</p>
+    <p>おもさ</p>
+</div>
+
+
+</body>
+</html>
