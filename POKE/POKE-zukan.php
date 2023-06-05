@@ -86,10 +86,16 @@ for($i=0; $i<count($array_name); $i++){
     $result_tmpl[] = $tmpl;
 }
 
-define('MAX','10');//マックスは10件表示
+
+if(!isset($_POST['kensu'])){
+    $ken = '10';
+}else{
+    $ken = $_POST['kensu'];
+}
+define('MAX', (int)$ken);//マックス表示件数
 $result_num = count($result_tmpl);
 $max_page = ceil($result_num / MAX);
- 
+//echo $max_page;
 if(!isset($_GET['page_id'])){//page_idがセットされていないとき
     $now = 1;
 }else{
@@ -127,19 +133,4 @@ if($now < $max_page){ // リンクをつけるかの判定
     echo '次へ';
 }
 
-
-
-
-
-
-
-/*
-print("<pre>");
-//var_dump($result_tmpl);
-print("</pre>");
-
-$result = implode('',$result_tmpl );
-$tmpl_main=str_replace("!poke_list!", $result, $tmpl_main);
-echo $tmpl_main;
-*/
 ?>

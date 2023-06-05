@@ -8,7 +8,7 @@ h1{
 }
  .pokeblock{
         background-color: #eee;
-        /***display: flex;***/
+        display: flex;
         display: inline-block;
         padding: 20px;
         margin: 10px;
@@ -24,9 +24,13 @@ h1{
 <h1>POKEMON図鑑</h1>
 !poke_list!
 
-<form>
-    <button type="button">次へのページ</button>
-    <button type="button">前のページ</button>
+<!--最大表示件数の選択_送信ボタンなし-->
+<form action="POKE-zukan.php" method="POST">
+    <select name="kensu" onchange="this.form.submit()">
+        <option value="10">10件</option>
+        <option value="50">50件</option>
+        <option value="100">100件</option>
+    </select>
 </form>
 
 
