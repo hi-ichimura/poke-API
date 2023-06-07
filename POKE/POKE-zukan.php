@@ -1,24 +1,24 @@
 <?php
-/* PokeAPI のデータを取得する(URL末尾の数字はポケモン図鑑のID) 
-$url = 'https://pokeapi.co/api/v2/pokemon/1/';
-$response = file_get_contents($url);
-// レスポンスデータは JSON 形式なので、デコードして連想配列にする
-$data = json_decode($response, true);
-print("<pre>");
-var_dump($data['name']); // 名前
-$name="";
-$name = $data['name'];
-$img = "";
-var_dump($data['sprites']['front_default']); // 正面向きのイメージ
-$img = $data['sprites']['front_default'];
-var_dump($data['height']); // たかさ
-var_dump($data['weight']); // おもさ
-print("</pre>");
-*/
 
-/** PokeAPI のデータを取得する(id=11から20のポケモンのデータ) */
+// file_get_contentsの結果をキャッシュしつつ返す
+function getCacheContents($url, $cachePath, $cacheLimit = 86400) {
+    if(file_exists($cachePath) && filemtime($cachePath) + $cacheLimit > time()) {
+      // キャッシュ有効期間内なのでキャッシュの内容を返す
+      return file_get_contents($cachePath);
+    } else {
+      // キャッシュがないか、期限切れなので取得しなおす
+      $data = file_get_contents($url);
+      file_put_contents($cachePath, $data, LOCK_EX); // キャッシュに保存
+      return $data;
+    }
+}
+
+/** PokeAPI のデータを取得する(id=1から50のポケモンのデータ) */
 $url = 'https://pokeapi.co/api/v2/pokemon/?limit=50&offset=0';
-$response = file_get_contents($url);
+$replace0 = str_replace('https://','',$url);
+$replace0 = str_replace('/','',$replace0);
+$replace0 = str_replace('?','',$replace0);
+$response = getCacheContents($url,"./cache1/{$replace0}");
 // レスポンスデータは JSON 形式なので、デコードして連想配列にする
 $data = json_decode($response, true);
 // 取得結果をループさせてポケモンの名前を表示する
@@ -34,8 +34,10 @@ foreach($data['results'] as $key => $value){
 //var_dump($value);
 
 $array_name[] =$value['name'];
-
-$response1 = file_get_contents($value['url']);
+$replace = str_replace('https://','',$value['url']);
+$replace = str_replace('/','',$replace);
+$response1 = getCacheContents($value['url'],"./cache2/{$replace}");
+//$response1 = file_get_contents($value['url']);
 $data1 = json_decode($response1, true);
 $array_img[] = $data1['sprites']['front_default'];
 $array_height[] =$data1['height'];
@@ -50,8 +52,31 @@ print("<pre>");
 //var_dump($array_type);
 print("</pre>");
 
+print("<pre>");
+/*日本語名*/
+$url2 = 'https://pokeapi.co/api/v2/language/11';
+$replace1 = str_replace('https://','',$url2);
+$replace1 = str_replace('/','',$replace1);
+$response2 = getCacheContents($url2,"./cache3/{$replace1}");
 
-/*テンプレートの読み込み*/
+// レスポンスデータは JSON 形式なので、デコードして連想配列にする
+$data2 = json_decode($response2, true);
+
+//$array_name2 = [];
+    //var_dump($data2['names']);
+
+//foreach($data2['results'] as $key => $value){
+        //var_dump($value);
+        
+        //$array_name[] =$value['name'];
+        //var_dump($value['url']);
+//}
+print("</pre>");
+
+
+
+
+/*Mainテンプレートの読み込み*/
 $file_name_main = "POKE-zukan.tmpl";
 $file_handler_main = fopen($file_name_main, "r");
 $tmpl_main = fread($file_handler_main, filesize($file_name_main));
@@ -62,7 +87,7 @@ $result_tmpl = [];
 $k = 0;
 for($i=0; $i<count($array_name); $i++){
     
-    /*テンプレートの読み込み*/
+    /*Cardテンプレートの読み込み*/
     $file_name = "POKE-zukan-card.tmpl";
     $file_handler = fopen($file_name, "r");
     $tmpl = fread($file_handler, filesize($file_name));
